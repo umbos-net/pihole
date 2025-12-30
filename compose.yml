@@ -1,0 +1,34 @@
+services:
+  pihole:
+    container_name: pihole
+    hostname: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    networks:
+      macvlan:
+        ipv4_address: 192.168.50.249
+        mac_address: "02:42:C0:A8:32:01"
+      traefik:
+    volumes:
+      - config:/etc/pihole
+      - dnsmasq:/etc/dnsmasq.d
+    environment:
+      FTLCONF_webserver_port: "80,[::]:80"
+      TZ: "America/New_York"
+    labels:
+      traefik.docker.network: "traefik"
+      traefik.enable: "true"
+      traefik.http.routers.pihole.rule: "Host(`pihole.umbos.net`)"
+      traefik.http.routers.pihole.entrypoints: "websecure"
+      traefik.http.routers.pihole.tls: "true"
+      traefik.http.routers.pihole.tls.certresolver: "cloudflare"
+      traefik.http.routers.pihole.middlewares: "lan-only,pihole-strip-admin"
+      traefik.http.services.pihole.loadbalancer.server.port: "80"
+networks:
+  macvlan:
+    external: true
+  traefik:
+    external: true
+volumes:
+  config:
+  dnsmasq:
