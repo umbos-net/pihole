@@ -22,7 +22,7 @@ services:
       traefik.http.routers.pihole.entrypoints: "websecure"
       traefik.http.routers.pihole.tls: "true"
       traefik.http.routers.pihole.tls.certresolver: "cloudflare"
-      traefik.http.routers.pihole.middlewares: "lan-only,pihole-strip-admin"
+      traefik.http.routers.pihole.middlewares: "lan-only@file,pihole-strip-admin@file"
       traefik.http.services.pihole.loadbalancer.server.port: "80"
 networks:
   macvlan:
